@@ -30,13 +30,6 @@ const Header = (props) => {
             <Nav.Link as={NavLink} to='/dmr' onClick={() => setExpanded(false)}>
               Raise DMR
             </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              to='/about'
-              onClick={() => setExpanded(false)}
-            >
-              About Us
-            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

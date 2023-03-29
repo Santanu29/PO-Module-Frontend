@@ -7,7 +7,6 @@ import RaiseDMR from './pages/Raisedmr/RaiseDMR';
 import './App.css';
 import UploadPo from './pages/Home/UploadPo';
 import Footer from './components/Footer';
-import { AboutUs } from './pages/AboutUs';
 
 function App() {
   return (
@@ -25,7 +24,6 @@ function App() {
           <Route path='/' element={<UploadPo />} />
           <Route path='/evc' element={<EvCalculation />} />
           <Route path='/dmr' element={<RaiseDMR />} />
-          <Route path='/about' element={<AboutUs />} />
         </Routes>
       </div>
       <Footer />
