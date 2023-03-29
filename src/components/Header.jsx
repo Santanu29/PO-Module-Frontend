@@ -21,34 +21,18 @@ const Header = (props) => {
         />
         <Navbar.Collapse id='navbarSupportedContent'>
           <Nav className='mr-auto ms-2'>
-            <Nav.Link
-              as={NavLink}
-              to='/'
-              href='/'
-              onClick={() => setExpanded(false)}
-            >
+            <Nav.Link as={NavLink} to='/' onClick={() => setExpanded(false)}>
               Home
             </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              to='/evc'
-              href='/evc'
-              onClick={() => setExpanded(false)}
-            >
+            <Nav.Link as={NavLink} to='/evc' onClick={() => setExpanded(false)}>
               EV Calculation
             </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              to='/dmr'
-              href='/dmr'
-              onClick={() => setExpanded(false)}
-            >
+            <Nav.Link as={NavLink} to='/dmr' onClick={() => setExpanded(false)}>
               Raise DMR
             </Nav.Link>
             <Nav.Link
               as={NavLink}
               to='/about'
-              href='#'
               onClick={() => setExpanded(false)}
             >
               About Us

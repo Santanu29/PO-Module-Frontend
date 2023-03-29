@@ -2,6 +2,7 @@ import axios from 'axios';
 import { memo, useState } from 'react';
 import { Button, Form, InputGroup, Table } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import config from '../../config.json';
 
 const DMRinputs = ({ details }) => {
   const data = details.details;
@@ -10,7 +11,7 @@ const DMRinputs = ({ details }) => {
   const handleSubmit = (e) => {
     e.preventDefault(details.ponumber);
     axios
-      .patch(`http://localhost:9000/poDetails/${details.ponumber}`, data)
+      .patch(`${config.SERVER_URL}poDetails/${details.ponumber}`, data)
       .then((d) => {
         console.log('Response', d);
         toast.success('Data Updated Successfully.');

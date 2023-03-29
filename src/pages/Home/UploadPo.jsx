@@ -3,7 +3,6 @@ import { Form, Card } from 'react-bootstrap';
 import PoDetails from './PoForm/PoDetails';
 
 const UploadPo = (props) => {
-  // const [submitPdf, setSubmitPdf] = useState(false);
   const fileRef = useRef();
   const [file, setFile] = useState();
   const [fileName, setfileName] = useState();
@@ -13,13 +12,11 @@ const UploadPo = (props) => {
     if (!file) return;
     setfileName(file.name);
     setFile(file);
-    // setSubmitPdf(true);
     e.preventDefault();
   };
 
   const handleReset = (e) => {
     setFile();
-    // setSubmitPdf(false);
     setfileName();
     fileRef.current.value = '';
   };

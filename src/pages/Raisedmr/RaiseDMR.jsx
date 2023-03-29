@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Alert, Card, Form } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import DMRinputs from './DMRinputs';
+import config from '../../config.json';
 
 const RaiseDMR = () => {
   const [id, setid] = useState('');
@@ -18,7 +19,7 @@ const RaiseDMR = () => {
   const handlesubmit = (e) => {
     e.preventDefault();
     axios
-      .get(`http://localhost:9000/getdetails/${id}`)
+      .get(`${config.SERVER_URL}getdetails/${id}`)
       .then((d) => {
         toast.success('Data Found');
         setdetails(d.data);

@@ -3,6 +3,7 @@ import { Form, Row, Col } from 'react-bootstrap';
 import AddRows from './AddRows';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import config from '../../../config.json';
 
 const PoDetails = ({ file, handleReset, fileName }) => {
   const [inputList, setInputList] = useState({
@@ -41,10 +42,10 @@ const PoDetails = ({ file, handleReset, fileName }) => {
       filename.append('file', file);
       let data = { details, filename };
       axios
-        .post('http://localhost:9000/poDetails', data)
+        .post(`${config.SERVER_URL}poDetails`, data)
         .then((d) => {
           console.log(d.data);
-          axios.post('http://localhost:9000/uploadFile', filename);
+          axios.post(`${config.SERVER_URL}uploadFile`, filename);
           toast.info('Data Submitted Successfully');
         })
         .catch((err) => {

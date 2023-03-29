@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Row, Col, Table, DropdownButton, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import config from '../../config.json';
 
 const EVDataMap = (props) => {
   const [data, setData] = useState(null);
@@ -30,7 +31,7 @@ const EVDataMap = (props) => {
 
   const handleSubmit = (e) => {
     axios
-      .post('http://localhost:9000/xlData', data)
+      .post(`${config.SERVER_URL}xlData`, data)
       .then((d) => {
         toast.info('Data Submitted Successfully');
       })
