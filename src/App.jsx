@@ -24,6 +24,7 @@ function App() {
           <Route path='/' element={<UploadPo />} />
           <Route path='/evc' element={<EvCalculation />} />
           <Route path='/dmr' element={<RaiseDMR />} />
+          {/* <Route path='/about' element={<AboutUs />} /> */}
         </Routes>
       </div>
       <Footer />

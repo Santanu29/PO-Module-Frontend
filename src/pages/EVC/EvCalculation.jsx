@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Form, Card, Row, Col } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import config from '../../config.json';
 import EVDataMap from './EVDataMap';
+import config from '../../config.json';
 
 const EvCalculation = () => {
   const [file, setFile] = useState(null);
@@ -51,7 +51,7 @@ const EvCalculation = () => {
     // const sheetname = workbook.SheetNames;
     // XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
     axios.get(`${config.SERVER_URL}xlData`).then((d) => {
-      // console.log(d);
+      console.log(d);
       const workbook = d.data;
       XLSX.writeFile(workbook, 'AllData.xlsx');
     });
