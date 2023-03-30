@@ -47,7 +47,7 @@ const DMRinputs = ({ details }) => {
             disabled
           />
           <a
-            href={`http://localhost:9000/dbFile/${details.filename}`}
+            href={`${config.SERVER_URL}dbFile/${details.filename}`}
             target='_blank'
             rel='noreferrer'
           >
