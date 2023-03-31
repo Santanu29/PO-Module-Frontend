@@ -30,6 +30,28 @@ const DMRinputs = ({ details }) => {
         </InputGroup>
         <span className='input-group-btn' style={{ width: '10px' }}></span>
         <InputGroup className='mt-3 mb-3'>
+          <InputGroup.Text>PO Name </InputGroup.Text>
+          <Form.Control
+            label='Enter Amount'
+            name='date'
+            value={details.poname}
+            disabled
+          />
+        </InputGroup>
+        <span className='input-group-btn' style={{ width: '10px' }}></span>
+        <InputGroup className='mt-3 mb-3'>
+          <InputGroup.Text>Project Name </InputGroup.Text>
+          <Form.Control
+            label='Enter Amount'
+            name='date'
+            value={details.projectName}
+            disabled
+          />
+        </InputGroup>
+      </div>
+      <div className='d-flex justify-content-evenly m-3'>
+        <span className='input-group-btn' style={{ width: '10px' }}></span>
+        <InputGroup className='mt-3 mb-3'>
           <InputGroup.Text>Date </InputGroup.Text>
           <Form.Control
             label='Enter Amount'

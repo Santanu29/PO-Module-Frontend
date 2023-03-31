@@ -10,9 +10,23 @@ const RaiseDMR = () => {
   const [show, setShow] = useState(true);
   const [found, setFound] = useState(true);
   const [detail, setdetails] = useState(null);
+  const [po, setPo] = useState({});
 
   useEffect(() => {
     document.title = 'Raise DMR';
+    const fetchAllPO = () => {
+      axios
+        .get(`${config.SERVER_URL}getAllItems`)
+        .then((d) => {
+          // toast.success('Data Found');
+          setPo(d.data);
+          // console.log(d.data);
+        })
+        .catch((err) => {
+          toast.error('Data Not Found.');
+        });
+    };
+    fetchAllPO();
     setdetails();
   }, []);
 
@@ -30,9 +44,13 @@ const RaiseDMR = () => {
         setFound(false);
       });
   };
+
   return (
     <Form>
       <Card className='text-center mt-3 files'>
+        {/* <button className='btn btn-light' type='submit' onClick={fetchAllPO}>
+          Search
+        </button> */}
         <Card.Header>Search PO number</Card.Header>
         <Card.Body>
           <div className='search'>
@@ -56,6 +74,7 @@ const RaiseDMR = () => {
           </div>
         </Card.Body>
       </Card>
+
       {detail ? (
         <div className='border p-3 mt-4'>
           <Alert

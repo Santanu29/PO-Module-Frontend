@@ -8,6 +8,8 @@ import config from '../../../config.json';
 const PoDetails = ({ file, handleReset, fileName }) => {
   const [inputList, setInputList] = useState({
     po_id: '',
+    poname: '',
+    projectName: '',
     date: '',
     items: [{ index: Math.random(), po_description: '', amount: '' }],
     filename: fileName.replace(/\s+/g, '_'),
@@ -63,11 +65,9 @@ const PoDetails = ({ file, handleReset, fileName }) => {
         <Form.Group>
           <br />
           <Row>
-            <Form.Label column lg={2}>
-              PO Number :
-            </Form.Label>
-            <Col>
-              <Form.Control
+            <Col className='form__group field'>
+              <input
+                className='text-input form__field'
                 type='number'
                 placeholder='Enter order number'
                 name='ponumber'
@@ -78,12 +78,47 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                   setInputList({ ...inputList, po_id: e.target.value })
                 }
               />
+              <label for='ponumber' class='form__label'>
+                PO Number
+              </label>
             </Col>
-            <Form.Label column lg={2}>
-              Select Date :
-            </Form.Label>
-            <Col>
-              <Form.Control
+            <Col className='form__group field'>
+              <input
+                className='text-input form__field'
+                type='text'
+                placeholder='Enter PO Name'
+                name='poname'
+                id='poname'
+                value={inputList.poname}
+                required
+                onChange={(e) =>
+                  setInputList({ ...inputList, poname: e.target.value })
+                }
+              />
+              <label for='poname' class='form__label'>
+                PO Name
+              </label>
+            </Col>
+            <Col className='form__group field'>
+              <input
+                className='text-input form__field'
+                type='text'
+                placeholder='Enter order number'
+                name='projectName'
+                id='projectName'
+                value={inputList.projectName}
+                required
+                onChange={(e) =>
+                  setInputList({ ...inputList, projectName: e.target.value })
+                }
+              />
+              <label for='ponumber' class='form__label'>
+                Project Name
+              </label>
+            </Col>
+            <Col className='form__group field'>
+              <input
+                className='text-input form__field'
                 type='date'
                 placeholder='Select Date'
                 name='date'
@@ -94,6 +129,9 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                   setInputList({ ...inputList, date: e.target.value })
                 }
               />
+              <label for='date' class='form__label'>
+                Select date
+              </label>
             </Col>
           </Row>
           <br />
