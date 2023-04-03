@@ -9,9 +9,9 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   // root: path.resolve(__dirname, 'src'),
-  // build: {
-  //   outDir: '../build',
-  // },
+  build: {
+    outDir: "./build",
+  },
   resolve: {
     alias: {
       "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
