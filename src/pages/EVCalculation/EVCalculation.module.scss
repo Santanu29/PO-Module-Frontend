@@ -1,0 +1,22 @@
+.textEditorClassname {
+  appearance: none;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  padding-block: 0;
+  padding-inline: 6px;
+  border: 2px solid #ccc;
+  vertical-align: top;
+  color: #000;
+  background-color: hsl(0deg 0% 100%);
+  font-family: inherit;
+  font-size: 14px;
+  &:focus {
+    border-color: #66afe9;
+    outline: none;
+  }
+  &::placeholder {
+    color: #999;
+    opacity: 1;
+  }
+}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { memo, useState } from 'react';
-import { Button, Form, InputGroup, Table } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { Button, Form, Row, Table, Col } from 'react-bootstrap';
+// import { toast } from 'react-toastify';
 import config from '../../config.json';
 
 const DMRinputs = ({ details }) => {
@@ -9,65 +9,89 @@ const DMRinputs = ({ details }) => {
   const [inputList, setInputList] = useState(data);
 
   const handleSubmit = (e) => {
+    console.log('DMRINput', data);
     e.preventDefault(details.ponumber);
     axios
       .patch(`${config.SERVER_URL}poDetails/${details.ponumber}`, data)
       .then((d) => {
         console.log('Response', d);
-        toast.success('Data Updated Successfully.');
+        // toast.success('Data Updated Successfully.');
       })
       .catch((err) => {
-        toast.error('Data Not Updated.');
+        // toast.error('Data Not Updated.');
+        console.log(err);
       });
   };
 
   return (
     <div>
-      <div className='d-flex justify-content-evenly m-3'>
-        <InputGroup className='mt-3 mb-3'>
-          <InputGroup.Text>PO Number </InputGroup.Text>
-          <Form.Control name='ponumber' value={details.ponumber} disabled />
-        </InputGroup>
-        <span className='input-group-btn' style={{ width: '10px' }}></span>
-        <InputGroup className='mt-3 mb-3'>
-          <InputGroup.Text>PO Name </InputGroup.Text>
-          <Form.Control
-            label='Enter Amount'
-            name='date'
+      <Row>
+        <Col className='form__group field'>
+          <input
+            className='text-input form__field'
+            type='number'
+            name='ponumber'
+            id='ponumber'
+            value={details.ponumber}
+            disabled
+          />
+          <label htmlFor='ponumber' className='form__label'>
+            PO Number
+          </label>
+        </Col>
+        <Col className='form__group field'>
+          <input
+            className='text-input form__field'
+            type='text'
+            name='poname'
+            id='poname'
             value={details.poname}
             disabled
           />
-        </InputGroup>
-        <span className='input-group-btn' style={{ width: '10px' }}></span>
-        <InputGroup className='mt-3 mb-3'>
-          <InputGroup.Text>Project Name </InputGroup.Text>
-          <Form.Control
-            label='Enter Amount'
-            name='date'
+          <label htmlFor='ponumber' className='form__label'>
+            PO Name
+          </label>
+        </Col>
+        <Col className='form__group field'>
+          <input
+            className='text-input form__field'
+            type='text'
+            name='projectName'
+            id='projectName'
             value={details.projectName}
             disabled
           />
-        </InputGroup>
-      </div>
-      <div className='d-flex justify-content-evenly m-3'>
-        <span className='input-group-btn' style={{ width: '10px' }}></span>
-        <InputGroup className='mt-3 mb-3'>
-          <InputGroup.Text>Date </InputGroup.Text>
-          <Form.Control
-            label='Enter Amount'
+          <label htmlFor='ponumber' className='form__label'>
+            Project Name
+          </label>
+        </Col>
+      </Row>
+      <Row className='mt-3 mb-3'>
+        <Col className='form__group field '>
+          <input
+            className='text-input form__field'
+            type='date'
             name='date'
+            id='date'
             value={details.date}
             disabled
           />
-        </InputGroup>
-        <span className='input-group-btn' style={{ width: '10px' }}></span>
-        <InputGroup className='mt-3 mb-3 File'>
-          <InputGroup.Text>File </InputGroup.Text>
-          <Form.Control
-            name='poFile'
+          <label htmlFor='ponumber' className='form__label'>
+            Date
+          </label>
+        </Col>
+        <Col className='form__group field File'>
+          <input
+            className='text-input form__field'
+            type='text'
+            name='file'
+            id='file'
             value={details.filename.replace(/_+/g, ' ')}
             disabled
           />
+          <label htmlFor='ponumber' className='form__label'>
+            File Name
+          </label>
           <a
             href={`${config.SERVER_URL}dbFile/${details.filename}`}
             target='_blank'
@@ -102,8 +126,11 @@ const DMRinputs = ({ details }) => {
               </g>
             </svg>
           </a>
-        </InputGroup>
-      </div>
+        </Col>
+      </Row>
+
+      <span className='input-group-btn' style={{ width: '10px' }}></span>
+
       <Table striped bordered hover responsive='sm' variant='light'>
         <thead>
           <tr>
@@ -111,6 +138,7 @@ const DMRinputs = ({ details }) => {
             <th>Amount</th>
             <th>Raised Amount</th>
             <th>DMR No.</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -155,12 +183,24 @@ const DMRinputs = ({ details }) => {
                     }}
                   />
                 </td>
+                <td>
+                  <Form.Control
+                    name='date'
+                    id='date'
+                    type='date'
+                    value={elementInArray.date}
+                    onChange={(e) => {
+                      elementInArray.date = e.target.value;
+                      setInputList({ ...inputList });
+                    }}
+                  />
+                </td>
               </tr>
             );
           })}
         </tbody>
       </Table>
-      <div className='d-flex justify-content-between mb-3'>
+      <div className='d-flex justify-content-between mt-3'>
         <Button
           type='submit'
           className='mx-auto col-md-6 submitBtn'

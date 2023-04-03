@@ -1,4 +1,5 @@
 import { Col, Row } from 'react-bootstrap';
+import './Home.module.scss';
 
 const AddRows = ({ inputList, deleted, setInputList }) => {
   const { items } = inputList;
@@ -21,7 +22,7 @@ const AddRows = ({ inputList, deleted, setInputList }) => {
               setInputList({ ...inputList });
             }}
           />
-          <label for='dater' class='form__label'>
+          <label htmlFor='dater' className='form__label'>
             Product {idx + 1}
           </label>
         </Col>
@@ -42,7 +43,7 @@ const AddRows = ({ inputList, deleted, setInputList }) => {
                 setInputList({ ...inputList });
               }}
             />
-            <label for='dater' class='form__label'>
+            <label htmlFor='dater' className='form__label'>
               Amount
             </label>
             <button
@@ -51,7 +52,7 @@ const AddRows = ({ inputList, deleted, setInputList }) => {
               type='button'
               className='btn btn-outline-danger'
             >
-              <i className='fa fa-minus' aria-hidden='true' />
+              -
             </button>
           </>
         </Col>

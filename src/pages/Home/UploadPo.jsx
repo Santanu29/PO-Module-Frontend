@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { Form, Card } from 'react-bootstrap';
-import PoDetails from './PoForm/PoDetails';
+import { Form, Card, Container } from 'react-bootstrap';
+import PoDetails from './PoDetails';
+import './Home.module.scss';
 
 const UploadPo = (props) => {
   const fileRef = useRef();
@@ -26,7 +27,7 @@ const UploadPo = (props) => {
   });
 
   return (
-    <div className='container'>
+    <Container>
       <Form>
         <Card className='text-center mt-3 files'>
           <Card.Header>Upload PO</Card.Header>
@@ -55,7 +56,7 @@ const UploadPo = (props) => {
       {file && (
         <PoDetails file={file} fileName={fileName} handleReset={handleReset} />
       )}
-    </div>
+    </Container>
   );
 };
 

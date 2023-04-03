@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import AddRows from './AddRows';
 import axios from 'axios';
+import './Home.module.scss';
 import { toast } from 'react-toastify';
-import config from '../../../config.json';
+import config from '../../config.json';
 
 const PoDetails = ({ file, handleReset, fileName }) => {
   const [inputList, setInputList] = useState({
@@ -38,27 +39,35 @@ const PoDetails = ({ file, handleReset, fileName }) => {
       alert('Please fill PO Number.');
     } else if (inputList.date.length === 0) {
       alert('Please fill date.');
+    } else if (inputList.poname.length === 0) {
+      alert('Please fill PO Name.');
+    } else if (inputList.projectName.length === 0) {
+      alert('Please fill Project Name.');
     } else {
       const details = inputList;
       var filename = new FormData();
       filename.append('file', file);
       let data = { details, filename };
+      console.log(data);
       axios
         .post(`${config.SERVER_URL}poDetails`, data)
         .then((d) => {
-          console.log(d.data);
+          console.log(d);
           axios.post(`${config.SERVER_URL}uploadFile`, filename);
-          toast.info('Data Submitted Successfully');
+          if (d.status === 200) {
+            toast.info('Data Submitted Successfully');
+          }
         })
         .catch((err) => {
           console.log(err);
+
           toast.error('Something went wrong');
         });
     }
   };
 
   return (
-    <div className='border p-3 mt-4 mb-3 '>
+    <div className='p-3 mt-4 mb-3 '>
       <h1 className='text-center'>Please fill Purchase Order details</h1>
       <br />
       <Form className='g-3'>
@@ -74,11 +83,12 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                 id='ponumber'
                 value={inputList.po_id}
                 required
+                aria-required
                 onChange={(e) =>
                   setInputList({ ...inputList, po_id: e.target.value })
                 }
               />
-              <label for='ponumber' class='form__label'>
+              <label htmlFor='ponumber' className='form__label'>
                 PO Number
               </label>
             </Col>
@@ -91,11 +101,12 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                 id='poname'
                 value={inputList.poname}
                 required
+                aria-required
                 onChange={(e) =>
                   setInputList({ ...inputList, poname: e.target.value })
                 }
               />
-              <label for='poname' class='form__label'>
+              <label htmlFor='poname' className='form__label'>
                 PO Name
               </label>
             </Col>
@@ -108,11 +119,12 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                 id='projectName'
                 value={inputList.projectName}
                 required
+                aria-required
                 onChange={(e) =>
                   setInputList({ ...inputList, projectName: e.target.value })
                 }
               />
-              <label for='ponumber' class='form__label'>
+              <label htmlFor='ponumber' className='form__label'>
                 Project Name
               </label>
             </Col>
@@ -123,13 +135,14 @@ const PoDetails = ({ file, handleReset, fileName }) => {
                 placeholder='Select Date'
                 name='date'
                 id='date'
+                aria-required
                 required
                 value={inputList.date}
                 onChange={(e) =>
                   setInputList({ ...inputList, date: e.target.value })
                 }
               />
-              <label for='date' class='form__label'>
+              <label htmlFor='date' className='form__label'>
                 Select date
               </label>
             </Col>
@@ -142,7 +155,7 @@ const PoDetails = ({ file, handleReset, fileName }) => {
           setInputList={setInputList}
         />
         <Form.Group className='d-flex justify-content-between' as={Col}>
-          <div className='  '>
+          <div className=' '>
             <button
               className='mt-3 btn btn-outline-primary'
               onClick={formSubmit}
@@ -165,7 +178,7 @@ const PoDetails = ({ file, handleReset, fileName }) => {
             className='btn btn-outline-primary mt-3 '
             style={{ maxHeight: '40px' }}
           >
-            <i className='fa fa-plus-circle' aria-hidden='true' />
+            +
           </button>
         </Form.Group>
       </Form>

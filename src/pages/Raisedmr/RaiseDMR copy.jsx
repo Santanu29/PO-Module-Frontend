@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import DMRinputs from './DMRinputs';
 import config from '../../config.json';
 import DMRList from './DMRList';
@@ -43,7 +43,6 @@ const RaiseDMR = () => {
       axios
         .get(`${config.SERVER_URL}getdetails/${idNo}`)
         .then((d) => {
-          console.log('aws', d.data);
           setdetails(d.data);
         })
         .catch((err) => {

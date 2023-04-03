@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+$Poppins: 'Poppins', sans-serif;
+
+//colors
+$dark: rgb(29, 29, 29);
+$light: #fff;
+$primary: rgb(162, 162, 246);
+$bg: rgb(244, 244, 255);
+$primary-hover: rgb(73, 73, 229);
+$background: #0093e9;
+$background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
+
+//spacing
+$spacing-md: 16px;
+$spacing-lg: 32px;
+
+//border radius
+$borderRadius: 12px;
+$radius: 0.2rem;
+
+//header height
+$headerHeight: 100px;
+
+//Screen
+$xsm: 374px; // For extra small
+$sm: 576px; // For small
+$md: 768px; // For medium
+$lg: 992px; // For large
+$xl: 1200px; // For extra larger
+$xxl: 1400px; // For larger
+
+@mixin breakpoint($point) {
+  @if $point == md {
+    //768px
+    @media (min-width: 48em) {
+      @content;
+    }
+  }
+}
+
+//For Extra Small
+@mixin xsm {
+  @media screen and (max-width: ($xsm)) {
+    @content;
+  }
+}
+
+//For Small
+@mixin sm {
+  @media screen and (max-width: ($sm)) {
+    @content;
+  }
+}
+
+//For Medium
+@mixin md {
+  @media screen and (max-width: ($md)) {
+    @content;
+  }
+}
+
+//For large
+@mixin lg {
+  @media screen and (max-width: ($lg)) {
+    @content;
+  }
+}
+
+//For Extra Large
+@mixin xl {
+  @media screen and (max-width: ($xl)) {
+    @content;
+  }
+}
+
+//For Extra Extra Large
+@mixin xxl {
+  @media screen and (max-width: ($xxl)) {
+    @content;
+  }
+}

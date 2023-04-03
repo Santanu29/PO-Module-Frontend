@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Table, DropdownButton, Dropdown } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Table,
+  DropdownButton,
+  Dropdown,
+  Button,
+} from 'react-bootstrap';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import config from '../../config.json';
 
 const EVDataMap = (props) => {
@@ -33,10 +40,12 @@ const EVDataMap = (props) => {
     axios
       .post(`${config.SERVER_URL}xlData`, data)
       .then((d) => {
-        toast.info('Data Submitted Successfully');
+        console.log(d);
+        // toast.info('Data Submitted Successfully');
       })
       .catch((err) => {
-        toast.error('Something went wrong');
+        console.log(err);
+        // toast.error('Something went wrong');
       });
   };
 
@@ -90,20 +99,22 @@ const EVDataMap = (props) => {
             ) : null}
           </div>
           <div className='d-grid gap-3 d-md-block'>
-            <button
-              className='mt-3 btn btn-outline-primary'
+            <Button
+              variant='outline-primary mt-3'
+              type='submit'
               onClick={handleSubmit}
             >
               Submit
-            </button>
+            </Button>
+
             <span style={{ margin: '3px' }} />
-            <button
-              className='btn btn-outline-danger mt-3'
+            <Button
+              variant='outline-danger mt-3'
               type='reset'
               onClick={() => props.handleReset()}
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </Col>
       </Row>
