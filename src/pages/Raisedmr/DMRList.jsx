@@ -7,9 +7,11 @@ import useTable from './useTable';
 
 const DMRList = (props) => {
   const data = props.poDetails;
+  // console.log(temp);
+  console.log(data);
   const [searchData, setSearchData] = useState();
   const [page, setPage] = useState(1);
-  const { slice, range } = useTable(data, page, 3);
+  const { slice, range } = useTable(data, page, 7);
   const [isSorting, setIsSorting] = useState(false);
 
   useEffect(() => {
@@ -39,11 +41,14 @@ const DMRList = (props) => {
   //   );
   //   console.log('sortedCars1', sortedCars1);
   return (
-    <div className='container-table100'>
+    <div className='container-table100 '>
       <div className='wrap-table100'>
         {searchData ? (
           <>
-            <button className='butn butn-one' onClick={() => setSearchData()}>
+            <button
+              className='butn butn-one mb-3'
+              onClick={() => setSearchData()}
+            >
               <span> Go Back</span>
             </button>
             <DMRDesc searchDetails={searchData} />
@@ -64,7 +69,7 @@ const DMRList = (props) => {
                 return (
                   <div className='rowo' key={index}>
                     <div className='cell' data-title='S.No.'>
-                      {index + 1}
+                      {pData.id}
                     </div>
                     <div className='cell' data-title='PO Number'>
                       {pData.ponumber}
@@ -82,7 +87,7 @@ const DMRList = (props) => {
                       className='btn btn-outline-dark'
                       onClick={(e) => handlePODetails(`${pData.ponumber}`, e)}
                     >
-                      Viwe more.
+                      View more.
                     </button>
                   </div>
                 );

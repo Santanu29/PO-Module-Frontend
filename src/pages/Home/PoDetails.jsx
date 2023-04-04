@@ -13,7 +13,7 @@ const PoDetails = ({ file, handleReset, fileName }) => {
     projectName: '',
     date: '',
     items: [{ index: Math.random(), po_description: '', amount: '' }],
-    filename: fileName.replace(/\s+/g, '_'),
+    filename: fileName.replace(/\s+/g, '+'),
   });
 
   const handleAddRows = (e) => {

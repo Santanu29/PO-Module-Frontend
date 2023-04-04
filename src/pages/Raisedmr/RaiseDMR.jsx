@@ -11,7 +11,9 @@ const RaiseDMR = () => {
   const [found, setFound] = useState(true);
   const [detail, setdetails] = useState(null);
   const [po, setPo] = useState();
+  const [sortType, setSortType] = useState('Default');
 
+  // console.log('data from rdmr', data);
   useEffect(() => {
     document.title = 'Raise DMR';
     setShow(false);
@@ -19,9 +21,41 @@ const RaiseDMR = () => {
       axios
         .get(`${config.SERVER_URL}getAllItems`)
         .then((d) => {
+          if (sortType === 'Default') {
+            let temp = d.data?.map((d, index) => ({ ...d, id: index + 1 }));
+            setPo(temp);
+          } else if (sortType === 'Oldest') {
+            let temp = d.data
+              ?.map((d, index) => ({
+                ...d,
+                id: index + 1,
+              }))
+              .sort((a, b) => {
+                return a.date
+                  .split('-')
+                  .join()
+                  .localeCompare(b.date.split('-').join());
+              });
+            setPo(temp);
+          } else if (sortType === 'Latest') {
+            let temp = d.data
+              ?.map((d, index) => ({
+                ...d,
+                id: index + 1,
+              }))
+              .sort((a, b) => {
+                return b.date
+                  .split('-')
+                  .join()
+                  .localeCompare(a.date.split('-').join());
+              });
+            setPo(temp);
+          }
           // toast.success('Data Found');
-          setPo(d.data);
-          console.log('Po', d.data);
+          // let temp = d.data?.map((d, index) => ({ ...d, id: index + 1 }));
+
+          // setPo(temp);
+          // console.log('Po', temp);
         })
         .catch((err) => {
           toast.error('Data Not Found.');
@@ -30,7 +64,7 @@ const RaiseDMR = () => {
     fetchAllPO();
     setid('');
     setdetails();
-  }, []);
+  }, [sortType]);
 
   const handlesubmit = (e, idNo) => {
     e.preventDefault();
@@ -55,8 +89,20 @@ const RaiseDMR = () => {
 
   return (
     <>
-      <div className='text-center mt-3 files'>
-        <div className='search'>
+      <div
+        className='text-center my-4 files'
+        style={{
+          display: 'flex ',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          className='search'
+          style={{
+            width: ' 100%',
+          }}
+        >
           <i className='fa fa-search' />
           <input
             type='text'
@@ -68,19 +114,55 @@ const RaiseDMR = () => {
               handlesubmit(e, e.target.value);
             }}
           />
-          <button
+          {/* <button
             className='btn btn-light'
             type='submit'
             onClick={handlesubmit}
           >
             Search
+          </button> */}
+        </div>
+        <div className='dropdown btn btn-outline-dark'>
+          <button
+            className='btn dropdown-toggle'
+            type='button'
+            data-bs-toggle='dropdown'
+            aria-expanded='false'
+          >
+            Sort By : {sortType}
           </button>
+          <ul className='dropdown-menu dropdown-menu-light'>
+            <li>
+              <button
+                className='dropdown-item'
+                onClick={() => setSortType('Latest')}
+              >
+                Latest
+              </button>
+            </li>
+            <li>
+              <button
+                className='dropdown-item'
+                onClick={() => setSortType('Oldest')}
+              >
+                Oldest
+              </button>
+            </li>
+            <li>
+              <button
+                className='dropdown-item'
+                onClick={() => setSortType('Default')}
+              >
+                None
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
       {/* <DMRList /> */}
       {!detail ? (
         <>
-          <div className='pt-3'>
+          <div className=''>
             {!found &&
               (show ? <h3 className='not-found'>No Data Found.</h3> : null)}
 

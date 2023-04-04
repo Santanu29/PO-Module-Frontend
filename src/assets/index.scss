@@ -70,7 +70,7 @@ body {
 .search {
   position: relative;
   align-items: center;
-  max-width: 50%;
+  max-width: 30%;
   box-shadow: 0 0 40px rgba(51, 51, 51, 0.1);
 }
 
@@ -177,9 +177,10 @@ body {
   display: -ms-flexbox;
   display: flex;
   align-items: center;
+  margin-bottom: 2rem;
   /* justify-content: center; */
   flex-wrap: wrap;
-  padding: 33px 0;
+  // padding: 33px 0;
 }
 
 .wrap-table100 {
@@ -251,9 +252,9 @@ body {
 }
 
 .rowo .cell {
-  font-family: Poppins-Regular;
+  font-family: Poppins;
   font-size: 15px;
-  color: #666;
+  color: #000;
   line-height: 1.2;
   font-weight: unset !important;
 
@@ -263,7 +264,7 @@ body {
 }
 
 .rowo.header .cell {
-  font-family: Poppins-Regular;
+  font-family: Poppins;
   font-size: 18px;
   color: #fff;
   line-height: 1.2;
@@ -312,7 +313,7 @@ body {
     width: 100%;
   }
   .rowo .cell {
-    font-family: Poppins-Regular;
+    font-family: Poppins;
     font-size: 18px;
     color: #555;
     line-height: 1.2;

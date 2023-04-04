@@ -12,7 +12,7 @@ const DMRinputs = ({ details }) => {
     console.log('DMRINput', data);
     e.preventDefault(details.ponumber);
     axios
-      .patch(`${config.SERVER_URL}poDetails/${details.ponumber}`, data)
+      .patch(`${'config.SERVER_URL'}poDetails/${details.ponumber}`, data)
       .then((d) => {
         console.log('Response', d);
         // toast.success('Data Updated Successfully.');
@@ -86,14 +86,17 @@ const DMRinputs = ({ details }) => {
             type='text'
             name='file'
             id='file'
-            value={details.filename.replace(/_+/g, ' ')}
+            value={details.filename}
             disabled
           />
           <label htmlFor='ponumber' className='form__label'>
             File Name
           </label>
           <a
-            href={`${config.SERVER_URL}dbFile/${details.filename}`}
+            href={`${'https://team1backendbucket.s3.ap-south-1.amazonaws.com/'}${details.filename.replace(
+              /\s+/g,
+              '+',
+            )}`}
             target='_blank'
             rel='noreferrer'
           >
