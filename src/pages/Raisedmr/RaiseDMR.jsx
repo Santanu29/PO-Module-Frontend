@@ -26,29 +26,29 @@ const RaiseDMR = () => {
             setPo(temp);
           } else if (sortType === 'Oldest') {
             let temp = d.data
-              ?.map((d, index) => ({
-                ...d,
-                id: index + 1,
-              }))
-              .sort((a, b) => {
+              ?.sort((a, b) => {
                 return a.date
                   .split('-')
                   .join()
                   .localeCompare(b.date.split('-').join());
-              });
-            setPo(temp);
-          } else if (sortType === 'Latest') {
-            let temp = d.data
+              })
               ?.map((d, index) => ({
                 ...d,
                 id: index + 1,
-              }))
-              .sort((a, b) => {
+              }));
+            setPo(temp);
+          } else if (sortType === 'Latest') {
+            let temp = d.data
+              ?.sort((a, b) => {
                 return b.date
                   .split('-')
                   .join()
                   .localeCompare(a.date.split('-').join());
-              });
+              })
+              ?.map((d, index) => ({
+                ...d,
+                id: index + 1,
+              }));
             setPo(temp);
           }
           // toast.success('Data Found');
@@ -122,42 +122,44 @@ const RaiseDMR = () => {
             Search
           </button> */}
         </div>
-        <div className='dropdown btn btn-outline-dark'>
-          <button
-            className='btn dropdown-toggle'
-            type='button'
-            data-bs-toggle='dropdown'
-            aria-expanded='false'
-          >
-            Sort By : {sortType}
-          </button>
-          <ul className='dropdown-menu dropdown-menu-light'>
-            <li>
-              <button
-                className='dropdown-item'
-                onClick={() => setSortType('Latest')}
-              >
-                Latest
-              </button>
-            </li>
-            <li>
-              <button
-                className='dropdown-item'
-                onClick={() => setSortType('Oldest')}
-              >
-                Oldest
-              </button>
-            </li>
-            <li>
-              <button
-                className='dropdown-item'
-                onClick={() => setSortType('Default')}
-              >
-                None
-              </button>
-            </li>
-          </ul>
-        </div>
+        {po ? (
+          <div className='dropdown btn btn-outline-dark'>
+            <button
+              className='btn dropdown-toggle'
+              type='button'
+              data-bs-toggle='dropdown'
+              aria-expanded='false'
+            >
+              Sort By : {sortType}
+            </button>
+            <ul className='dropdown-menu dropdown-menu-light'>
+              <li>
+                <button
+                  className='dropdown-item'
+                  onClick={() => setSortType('Latest')}
+                >
+                  Latest
+                </button>
+              </li>
+              <li>
+                <button
+                  className='dropdown-item'
+                  onClick={() => setSortType('Oldest')}
+                >
+                  Oldest
+                </button>
+              </li>
+              <li>
+                <button
+                  className='dropdown-item'
+                  onClick={() => setSortType('Default')}
+                >
+                  None
+                </button>
+              </li>
+            </ul>
+          </div>
+        ) : null}
       </div>
       {/* <DMRList /> */}
       {!detail ? (

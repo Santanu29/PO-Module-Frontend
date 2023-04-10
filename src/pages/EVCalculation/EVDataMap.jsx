@@ -27,7 +27,7 @@ const EVDataMap = (props) => {
       var sheetdata = props.data[id];
       setData(sheetdata);
       setSheet(props.sheet[id]);
-      if (sheetdata) setKey(Object.keys(sheetdata[0]));
+      // if (sheetdata) setKey(Object.keys(sheetdata[3]));
     };
     readData();
   }, [id, props.data, props.sheet, sheet]);
@@ -37,10 +37,11 @@ const EVDataMap = (props) => {
   };
 
   const handleSubmit = (e) => {
+    axios.post(`${config.SERVER_URL}xlData`, data);
+    console.log(typeof data);
+    console.log(data);
     axios
-      .post(`${config.SERVER_URL}xlData`, data)
       .then((d) => {
-        console.log(d);
         // toast.info('Data Submitted Successfully');
       })
       .catch((err) => {
@@ -60,7 +61,7 @@ const EVDataMap = (props) => {
             title='Select sheet'
             onSelect={handleSelect}
           >
-            {props.sheet.map((x, y) => (
+            {props.sheet?.map((x, y) => (
               <Dropdown.Item key={y} eventKey={y}>
                 {x}
               </Dropdown.Item>
@@ -79,15 +80,15 @@ const EVDataMap = (props) => {
           >
             {keyValue ? (
               <Table responsive>
-                <tbody className='border'>
+                <tbody className='border' contentEditable>
                   <tr>
-                    {keyValue.map((dat, i) => (
+                    {keyValue?.map((dat, i) => (
                       <th key={i} className='bg-light'>
                         {dat}
                       </th>
                     ))}
                   </tr>
-                  {data.map((numList, i) => (
+                  {data?.map((numList, i) => (
                     <tr key={i}>
                       {keyValue.map((num, j) => (
                         <td key={j}>{numList[num]}</td>

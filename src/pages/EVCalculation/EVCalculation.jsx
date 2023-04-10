@@ -18,7 +18,12 @@ const EvCalculation = () => {
   });
 
   const readDataFromExcel = (data1) => {
-    const workbook = XLSX.readFile(data1);
+    const workbook = XLSX.read(data1, {
+      cellFormula: true,
+      type: 'binary',
+      cellDates: true,
+      cellStyles: true,
+    });
     let sheetName = workbook.SheetNames;
     var mySheetData = sheetName.map(function (sheet) {
       const worksheet = workbook.Sheets[sheet];
@@ -96,7 +101,15 @@ const EvCalculation = () => {
         </Col>
       </Row>
       {data ? (
-        <EVDataMap data={data} sheet={sheet} id={0} handleReset={handleReset} />
+        <>
+          {console.log(data)}
+          <EVDataMap
+            data={data}
+            sheet={sheet}
+            id={0}
+            handleReset={handleReset}
+          />
+        </>
       ) : null}
     </div>
   );

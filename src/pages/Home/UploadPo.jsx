@@ -1,30 +1,31 @@
 import { useEffect, useState, useRef } from 'react';
 import { Form, Card, Container } from 'react-bootstrap';
 import PoDetails from './PoDetails';
-import './Home.module.scss';
 
-const UploadPo = (props) => {
+const UploadPo = () => {
   const fileRef = useRef();
-  const [file, setFile] = useState();
-  const [fileName, setfileName] = useState();
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
 
+  // Handle file selection
   const handleOnChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setfileName(file.name);
+    setFileName(file.name);
     setFile(file);
-    e.preventDefault();
   };
 
-  const handleReset = (e) => {
-    setFile();
-    setfileName();
+  // Handle file reset
+  const handleReset = () => {
+    setFileName('');
+    setFile(null);
     fileRef.current.value = '';
   };
 
+  // Set document title on mount
   useEffect(() => {
     document.title = 'Home';
-  });
+  }, []);
 
   return (
     <Container>
@@ -41,7 +42,7 @@ const UploadPo = (props) => {
                 title='file'
                 type='file'
                 name='file'
-                onChange={(e) => handleOnChange(e)}
+                onChange={handleOnChange}
                 ref={fileRef}
                 accept='.pdf'
                 required

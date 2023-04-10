@@ -1,201 +1,227 @@
-import React, { useEffect, useState } from 'react';
-import classes from './EVCalculation.module.scss';
-import DataGrid from 'react-data-grid';
-import { read, utils, writeFile } from 'xlsx';
-import 'react-data-grid/lib/styles.css';
-import { Table } from 'react-bootstrap';
-
-function autoFocusAndSelect(input) {
-  input?.focus();
-  input?.select();
-}
-
-export function textEditor({ row, column, onRowChange, onClose }) {
-  return (
-    <input
-      className={classes.textEditorClassname}
-      ref={autoFocusAndSelect}
-      value={row[column.key]}
-      onChange={(event) =>
-        onRowChange({ ...row, [column.key]: event.target.value })
-      }
-      onBlur={() => onClose(true)}
-    />
-  );
-}
-function arrayify(rows) {
-  return rows.map((row) => {
-    if (Array.isArray(row)) return row;
-    var length = Object.keys(row).length;
-    for (; length > 0; --length) if (row[length - 1] != null) break;
-    return Array.from({ length, ...row });
-  });
-}
-
-const getRowsCols = (data, sheetName) => ({
-  rows: utils.sheet_to_json(data[sheetName], { header: 1 }),
-  columns: Array.from(
-    {
-      length: utils.decode_range(data[sheetName]['!ref'] || 'A1').e.c + 1,
-    },
-    (_, i) => ({
-      key: String(i),
-      name: utils.encode_col(i),
-      editor: textEditor,
-    }),
-  ),
-});
+import { useState, useRef } from 'react';
+import {
+  Table,
+  Button,
+  Card,
+  Container,
+  DropdownButton,
+  Dropdown,
+  Row,
+  Col,
+  Form,
+  Alert,
+} from 'react-bootstrap';
+import * as XLSX from 'xlsx';
+import axios from 'axios';
 
 const EnEVCalculation = () => {
-  const [data, setData] = useState(null);
-  const [keyValue, setKey] = useState(null);
-  const [rows, setRows] = useState([]); // data rows
-  const [columns, setColumns] = useState([]); // columns
-  const [workBook, setWorkBook] = useState({}); // workbook
-  const [sheets, setSheets] = useState([]); // list of sheet names
-  const [current, setCurrent] = useState(''); // selected sheet
+  const [data, setData] = useState([]);
+  const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
+  const [workbook, setWorkbook] = useState(null);
+  const [fileError, setFileError] = useState('');
+  const [dataError, setDataError] = useState('');
+  const [validationError, setValidationError] = useState('');
+  const inputFileRef = useRef(null);
 
-  /* called when sheet dropdown is changed */
-  function selectSheet(name) {
-    /* update workbook cache in case the current worksheet was changed */
-    workBook[current] = utils.aoa_to_sheet(arrayify(rows));
-
-    /* get data for desired sheet and update state */
-    const { rows: new_rows, columns: new_columns } = getRowsCols(
-      workBook,
-      name,
-    );
-    setRows(new_rows);
-    setColumns(new_columns);
-    setCurrent(name);
-  }
-  const defaultColumnProperties = {
-    resizable: true,
-    width: 120,
+  const handleFileUpload = (e) => {
+    e.preventDefault();
+    setFileError('');
+    setDataError('');
+    setValidationError('');
+    try {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const workbook = XLSX.read(event.target.result, { type: 'binary' });
+        setWorkbook(workbook);
+        const worksheetNames = workbook.SheetNames;
+        const selectedWorksheet =
+          workbook.Sheets[worksheetNames[selectedSheetIndex]];
+        const sheetData = XLSX.utils.sheet_to_json(selectedWorksheet, {
+          header: 1,
+          raw: false,
+          dateNF: 'yyyy-mm-dd',
+          cellDates: true,
+        });
+        // Loop through each row in the sheetData and replace empty values with 0 for a particular row
+        const modifiedSheetData = sheetData.map((row, index) => {
+          if (index === 2) {
+            // Replace empty values with 0 for row at index 2
+            return row.map((cell) => (cell === '' ? 0 : cell));
+          }
+          return row;
+        });
+        // Validate data
+        const numCols = modifiedSheetData[0].length;
+        const isValid = modifiedSheetData.every(
+          (row) => row.length === numCols,
+        );
+        if (!isValid) {
+          setValidationError('Invalid data format.');
+        } else {
+          setData(modifiedSheetData);
+        }
+      };
+      reader.readAsBinaryString(file);
+    } catch (error) {
+      setFileError('Error reading file. Please select a valid Excel file.');
+    }
   };
-  const sortRows = (initialRows, sortColumn, sortDirection) => (rows) => {
-    const comparer = (a, b) => {
-      if (sortDirection === 'ASC') {
-        return a[sortColumn] > b[sortColumn] ? 1 : -1;
-      } else if (sortDirection === 'DESC') {
-        return a[sortColumn] < b[sortColumn] ? 1 : -1;
-      }
-    };
-    return sortDirection === 'NONE' ? initialRows : [...rows].sort(comparer);
-  };
-  /* this method handles refreshing the state with new workbook data */
-  async function handleAB(file) {
-    /* read file data */
-    const data = read(file);
-    console.log(data);
-    /* update workbook state */
-    setWorkBook(data.Sheets);
-    setSheets(data.SheetNames);
 
-    /* select the first worksheet */
-    const name = data.SheetNames[0];
-    const { rows: new_rows, columns: new_columns } = getRowsCols(
-      data.Sheets,
-      name,
-    );
-    setRows(new_rows);
-    setColumns(new_columns);
-    setCurrent(name);
-  }
-
-  /* called when file input element is used to select a new file */
-  async function handleFile(ev) {
-    const file = await ev.target.files?.[0]?.arrayBuffer();
-    if (file) await handleAB(file);
-  }
-
-  /* when page is loaded, fetch and processs worksheet */
-  useEffect(() => {
-    (async () => {
-      const f = await fetch('https://sheetjs.com/pres.numbers');
-      await handleAB(await f.arrayBuffer());
-    })();
-  }, []);
-
-  /* method is called when one of the save buttons is clicked */
-  function saveFile(ext) {
-    console.log('current', current);
-    /* update current worksheet in case changes were made */
-    workBook[current] = utils.aoa_to_sheet(arrayify(rows));
-
-    /* construct workbook and loop through worksheets */
-    const wb = utils.book_new();
-    sheets.forEach((n) => {
-      utils.book_append_sheet(wb, workBook[n], n);
+  const handleSelectChange = (event) => {
+    setSelectedSheetIndex(event);
+    const worksheetNames = workbook.SheetNames;
+    const selectedWorksheet = workbook.Sheets[worksheetNames[event]];
+    const sheetData = XLSX.utils.sheet_to_json(selectedWorksheet, {
+      header: 1,
+      raw: false,
+      dateNF: 'yyyy-mm-dd',
+      cellDates: true,
     });
+    setData(sheetData);
+  };
 
-    /* generate a file and download it */
-    writeFile(wb, 'SheetJSRDG.' + ext);
-  }
+  const handleRemoveFile = () => {
+    setData([]);
+    setWorkbook(null);
+    setFileError('');
+    setDataError('');
+    setValidationError('');
+    setSelectedSheetIndex(0);
+    inputFileRef.current.value = null;
+  };
+
+  const handleSubmit = async () => {
+    if (data.length === 0) {
+      setDataError('No data to submit.');
+      return;
+    }
+    try {
+      const response = await axios.post('/api/submit-sheet-data', { data });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <>
-      <h3>Slect File</h3>
-      <input type='file' onChange={handleFile} />
-      {sheets.length > 0 && (
-        <>
-          <p>
-            Use the dropdown to switch to a worksheet:&nbsp;
-            <select
-              onChange={async (e) => selectSheet(sheets[+e.target.value])}
-            >
-              {sheets.map((sheet, idx) => (
-                <option key={sheet} value={idx}>
-                  {sheet}
-                </option>
-              ))}
-            </select>
-          </p>
-          <div className='flex-cont'>
-            <b>Current Sheet: {current}</b>
-          </div>
-          {columns ? (
-            <Table responsive>
-              {/* {console.log('columns', columns)}
-              {console.log('rows', rows)}
-              <tbody className='border'>
-                <tr>
-                  {rows[0].map((dat, i) => (
-                    <th key={i} className='bg-light'>
-                      {dat}
-                    </th>
-                  ))}
-                </tr>
-                {rows.map((numList, i) => (
-                  <tr key={i}>{numList[i]}</tr>
-                ))}
-              </tbody> */}
-            </Table>
-          ) : null}
-          <DataGrid
-            className='rdg-light'
-            rowGetter={(i) => rows[i]}
-            enableCellSelect={true}
-            columns={columns}
-            rows={rows}
-            onRowsChange={setRows}
-            onGridSort={(sortColumn, sortDirection) =>
-              setRows(sortRows(initialRows, sortColumn, sortDirection))
-            }
-          />
-          <p>
-            Click one of the buttons to create a new file with the modified data
-          </p>
-          <div className='flex-cont'>
-            {['xlsx', 'xlsb', 'xls'].map((ext) => (
-              <button key={ext} onClick={() => saveFile(ext)}>
-                export [.{ext}]
-              </button>
-            ))}
-          </div>
-        </>
+    <Container fluid>
+      <Row className='mt-3'>
+        <Col>
+          <Form>
+            <Card className='text-center mt-3 files'>
+              <Card.Header>Upload Excel file</Card.Header>
+              <Card.Body>
+                <Card.Text>
+                  <input
+                    placeholder='Select File..'
+                    title='file'
+                    type='file'
+                    name='file'
+                    onChange={handleFileUpload}
+                    ref={inputFileRef}
+                    accept='.xlsx'
+                    required
+                  />
+                  {data.length > 0 ? (
+                    <i className='fa fa-close' onClick={handleRemoveFile} />
+                  ) : null}
+                </Card.Text>
+                {fileError ? <Alert variant='danger'>{fileError}</Alert> : null}
+              </Card.Body>
+            </Card>
+          </Form>
+        </Col>
+      </Row>
+      {data.length > 0 && (
+        <Row className='mt-3'>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Row>
+                  <div className='d-flex justify-content-between mt-1' as={Col}>
+                    <h5 className='mt-1 fw-bolder'>
+                      Selected Sheet: {workbook.SheetNames[selectedSheetIndex]}
+                    </h5>
+                    <DropdownButton
+                      className='mb-1'
+                      label='Selected Sheet :'
+                      title='Select sheet'
+                      onSelect={handleSelectChange}
+                    >
+                      {workbook.SheetNames.map((sheetName, index) => (
+                        <Dropdown.Item key={index} eventKey={index}>
+                          {sheetName}
+                        </Dropdown.Item>
+                      ))}
+                    </DropdownButton>
+                  </div>
+                </Row>
+                {validationError && (
+                  <Alert variant='danger'>{validationError}</Alert>
+                )}
+                <div
+                  className='table-responsive'
+                  style={{ maxHeight: '90vh', overflow: 'scroll' }}
+                >
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        {data[0].map((cell, index) => (
+                          <th
+                            key={index}
+                            style={{
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {typeof cell === 'number'
+                              ? cell.toLocaleString()
+                              : cell}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.slice(1).map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td
+                              key={cellIndex}
+                              style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {typeof cell === 'number'
+                                ? cell.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 5,
+                                  })
+                                : cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+                {dataError && <Alert variant='warning'>{dataError}</Alert>}
+                <Button
+                  className='mt-3'
+                  variant='primary'
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       )}
-    </>
+    </Container>
   );
 };
 
